@@ -50,6 +50,9 @@ class TestCorpusOfOneWord:
     def test_first_letter_of_word_has_referrence_to_word(self):
         assert self.WORD in self.corpus.nodes[self.first_letter].words
 
+    def test_only_one_letter_is_in_base_of_corpus(self):
+        assert len(self.corpus.nodes) == 1
+
     def test_first_letter_of_word_has_referrence_to_second_letter_of_word(self):
         assert self.second_letter in self.corpus.nodes[self.first_letter].children
 
