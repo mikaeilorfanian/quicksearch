@@ -1,4 +1,30 @@
-from search_corpus import make_search_corpus
+from search_corpus import make_search_corpus, Word, WordList
+
+
+class TestWordList:
+
+    def test_word_object_found_in_word_list(self):
+        word = Word('hi')
+        word_list = WordList()
+        word_list.append(word)
+
+        assert word in word_list
+
+    def test_non_existing_word_not_found_in_word_list(self):
+        word = Word('hi')
+        word_list = WordList()
+        word_list.append(Word('his'))
+
+        assert word not in word_list
+
+    def test_adding_to_word_list_works(self):        
+        word_list = WordList()
+        word_list.append(Word('hi'))
+        word_list.append(Word('his'))
+
+        assert Word('his') in word_list
+        assert len(word_list) == 2
+
 
 
 class TestCorpusOfOneWord:
@@ -14,7 +40,8 @@ class TestCorpusOfOneWord:
         return make_search_corpus([self.WORD])
 
     def test_first_letter_of_word_has_referrence_to_word(self):
-        assert self.WORD in self.corpus.base_node.children[self.first_letter].words
+        corpus = self.corpus  # this acts as a setUp for the corpus
+        assert Word(self.WORD) in corpus.base_node.children[self.first_letter].words
 
     def test_only_one_letter_is_in_base_of_corpus(self):
         assert len(self.corpus.base_node) == 1
@@ -25,7 +52,7 @@ class TestCorpusOfOneWord:
     def test_second_letter_is_child_of_first_letter_and_has_referrence_to_word(self):
 
         assert self.second_letter in self.corpus.base_node.children[self.first_letter].children
-        assert self.WORD in self.corpus.base_node.children[self.first_letter].children['e'].words
+        assert Word(self.WORD) in self.corpus.base_node.children[self.first_letter].children['e'].words
 
     def test_third_letter_is_child_of_first_letter_and_has_referrence_to_word(self):
         assert self.third_letter in self.corpus.base_node.children[self.first_letter]. \
