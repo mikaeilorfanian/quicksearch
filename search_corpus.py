@@ -72,10 +72,35 @@ class SearchCorpus:
         current_node.add_child(word, letter)
 
     def get_hits_for_letters(self, letters):
-        try:
-            return self.base_node.children[letters].words
-        except KeyError:
-            return []
+        if len(letters) == 1:
+            letter1 = letters[0]
+
+            try:
+                return sorted(self.base_node.children[letter1].words, key=lambda word: word.value)
+            except KeyError:
+                return []
+
+        elif len(letters) == 2:
+            letter1 = letters[0]
+            letter2 = letters[1]
+
+            try:
+                return sorted(self.base_node.children[letter1].children[letter2].words, key=lambda word: word.value)
+            except KeyError:
+                return []
+
+        elif len(letters) == 3:
+            letter1 = letters[0]
+            letter2 = letters[1]
+            letter3 = letters[2]
+
+            try:
+                return sorted(
+                    self.base_node.children[letter1].children[letter2].children[letter3].words,
+                    key=lambda word: word.value
+                )
+            except KeyError:
+                return []
 
 
 def make_search_corpus(words):

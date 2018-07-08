@@ -1,6 +1,9 @@
+from typing import List
+
+import pytest
 from pytest import fixture
 
-from search_corpus import make_search_corpus
+from search_corpus import make_search_corpus, SearchCorpus, Word
 
 
 FIXTURE_FILENAME = './fixture_for_testing.txt'
@@ -14,16 +17,43 @@ def search_corpus():
     return make_search_corpus(words)
 
 
-class TestSearchQueryWithOnlyOneLetter:
-    number_of_words_with_f_as_first_letter = 6
-    number_of_words_with_1_as_first_letter = 1
+def _assert_number_of_results_for_query(corpus: SearchCorpus, query: str, expected_results: List[Word]):
+        query_results = corpus.get_hits_for_letters(query)
+        assert len(query_results) == len(expected_results)
+        # import pdb; pdb.set_trace()
+        assert [word.value for word in query_results] == expected_results
 
-    non_existing_first_letter = '9'
 
-    def test_searching_for_one_letter_returns_correct_number_of_results(self, search_corpus):
-        assert len(search_corpus.get_hits_for_letters('f')) == self.number_of_words_with_f_as_first_letter
+@pytest.mark.parametrize(
+    'search_query,results',
+    [
+        (
+            'f',
+            ['facebook', 'facebook lite', 'facebook pages manager', 'fifa 14 international', 'flappy bird', 'fts15']
+        ),
+        ('1', ['1mobile market']),
+        ('9', []),
+        ('fa', ['facebook', 'facebook lite', 'facebook pages manager']),
+        ('xm', ['xmodgames']),
+        ('11', []),
+        (
+            'go',
+            [
+                'go craft 3d', 'go keyboard', 'go launcher prime', 'google contacts sync', 'google drive',
+                'google duo', 'google indic keyboard', 'google now launcher', 'google play newsstand',
+                'google street view', 'google talkback'
+            ]
+        ),
+        (
+            'goo',
+            [
+                'google contacts sync', 'google drive', 'google duo', 'google indic keyboard',
+                'google now launcher', 'google play newsstand', 'google street view', 'google talkback'
+            ]
+        ),
+        ('fac', ['facebook', 'facebook lite', 'facebook pages manager']),
 
-        assert len(search_corpus.get_hits_for_letters('1')) == self.number_of_words_with_1_as_first_letter
-
-    def test_searching_for_nonexisting_letter_returns_nothing(self, search_corpus):
-        assert len(search_corpus.get_hits_for_letters(self.non_existing_first_letter)) == 0
+    ]
+)
+def test_searching_for_string_returns_correct_results(search_corpus, search_query, results):
+    _assert_number_of_results_for_query(search_corpus, search_query, results)
