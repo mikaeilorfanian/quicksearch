@@ -17,14 +17,13 @@ class TestWordList:
 
         assert word not in word_list
 
-    def test_adding_to_word_list_works(self):        
+    def test_adding_to_word_list_works(self):
         word_list = WordList()
         word_list.append(Word('hi'))
         word_list.append(Word('his'))
 
         assert Word('his') in word_list
         assert len(word_list) == 2
-
 
 
 class TestCorpusOfOneWord:
@@ -119,6 +118,6 @@ class TestCorpusWithOneWordWithWhiteSpaceAndUpperCaseLetter(TestCorpusOfOneWord)
 
     @property
     def corpus(self):
-        original_word = '%s' % self.WORD 
+        original_word = '%s' % self.WORD
         self.WORD = self.WORD.lower()
         return make_search_corpus([original_word])
