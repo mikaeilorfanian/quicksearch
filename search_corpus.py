@@ -71,6 +71,12 @@ class SearchCorpus:
     def add_child_to_node(self, current_node: Node, word: Word, letter: str):
         current_node.add_child(word, letter)
 
+    def get_hits_for_letters(self, letters):
+        try:
+            return self.base_node.children[letters].words
+        except KeyError:
+            return []
+
 
 def make_search_corpus(words):
     search_corpus = SearchCorpus(words)
