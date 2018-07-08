@@ -1,3 +1,5 @@
+import string
+
 from search_corpus import make_search_corpus, Node, SearchCorpus, Word, WordList
 
 
@@ -44,8 +46,8 @@ class CorpusTestUtils:
         assert len(node.children) == number_of_children
 
     def _assert_letters_are_lower_case(self, node: Node):
-        white_space = ' '  # don't check if white space is lower case
-        assert all(letter.islower() if letter != white_space else True for letter in node.children.keys())
+        all_valid_letters = string.ascii_letters  # don't check if letter is not one of these
+        assert all(letter.islower() if letter in all_valid_letters else True for letter in node.children.keys())
 
     def _assert_previous_letter_has_referrence_to_next_letter(self, prev_letter: str, next_letter: str, node: Node):
         assert next_letter in node.children[prev_letter].children
@@ -220,8 +222,9 @@ class TestCorpusWithManyWords(CorpusTestUtils):
         assert len(self.corpus.words) == self.NUMBER_OF_UNIQUE_TITLES
         assert self.corpus.base_node.words == [None]
 
-    # def test_fifa_is_in_search_corpus_in_correct_places_in_the_corpus_data_structure(self):
-    #     self._assert_node_structure_is_correct(self.corpus.base_node, 'f', 1)
+    def test_fifa_is_in_search_corpus_in_correct_places_in_the_corpus_data_structure(self):
+        number_of_children_in_base_node = 29
+        self._assert_node_structure_is_correct(self.corpus.base_node, 'f', number_of_children_in_base_node)
 
-    #     assert 'f' in self.corpus.base_node
-    #     assert Word('fifa') in self.corpus.base_node.children['f'].words
+        assert 'f' in self.corpus.base_node
+        assert Word('fifa 14 international') in self.corpus.base_node.children['f'].words
