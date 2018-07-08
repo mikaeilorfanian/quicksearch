@@ -19,8 +19,8 @@ def search_corpus():
 
 def _assert_number_of_results_for_query(corpus: SearchCorpus, query: str, expected_results: List[Word]):
         query_results = corpus.get_hits_for_letters(query)
-        assert len(query_results) == len(expected_results)
-        # import pdb; pdb.set_trace()
+
+        assert len(query_results) == len(expected_results)        
         assert [word.value for word in query_results] == expected_results
 
 
@@ -52,7 +52,24 @@ def _assert_number_of_results_for_query(corpus: SearchCorpus, query: str, expect
             ]
         ),
         ('fac', ['facebook', 'facebook lite', 'facebook pages manager']),
-
+        (
+            'google',
+            [
+                'google contacts sync', 'google drive', 'google duo', 'google indic keyboard',
+                'google now launcher', 'google play newsstand', 'google street view', 'google talkback'
+            ]
+        ),
+        (
+            'google ',
+            [
+                'google contacts sync', 'google drive', 'google duo', 'google indic keyboard',
+                'google now launcher', 'google play newsstand', 'google street view', 'google talkback'
+            ]
+        ),
+        ('Dropbox', ['dropbox']),
+        ('Dropbox ', ['dropbox']),
+        ('Dropbox !', []),
+        ('3D', ['3d tennis']),
     ]
 )
 def test_searching_for_string_returns_correct_results(search_corpus, search_query, results):
