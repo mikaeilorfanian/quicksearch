@@ -121,3 +121,13 @@ class TestCorpusWithOneWordWithWhiteSpaceAndUpperCaseLetter(TestCorpusOfOneWord)
         original_word = '%s' % self.WORD
         self.WORD = self.WORD.lower()
         return make_search_corpus([original_word])
+
+
+class TestCorpusOfTwoWordsThatStartWithDifferentLetters:
+
+    def test_duplicate_words_are_removed(self):
+        corpus = SearchCorpus(['hi', 'hi', 'Hi', 'HI', 'hello', 'Hello', ' heY', ' hey'])
+        corpus.preprocess_words()
+
+        assert len(corpus.words) == 3
+

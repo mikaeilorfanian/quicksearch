@@ -1,5 +1,5 @@
 import typing
-from typing import List
+from typing import List, Set
 
 
 class Word(typing.NamedTuple):
@@ -51,6 +51,7 @@ class SearchCorpus:
         word = self.words[0].lower()
         word = Word(word)
         self.make_base_node()
+        self.preprocess_words()
 
         current_node = self.base_node
 
@@ -60,6 +61,10 @@ class SearchCorpus:
 
     def make_base_node(self):
         self.base_node = Node(None)
+
+    def preprocess_words(self) -> Set[Word]:
+        unique_lower_case_letters = {word.lower().strip() for word in self.words}
+        self.words = {Word(w) for w in unique_lower_case_letters}
 
     def add_node(self, current_node: Node, word: Word, letter: str):
         current_node.add_child(word, letter)
