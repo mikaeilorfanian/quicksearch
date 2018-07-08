@@ -79,7 +79,8 @@ class TestCorpusOfOneWord(CorpusTestUtils):
         self._assert_previous_letter_has_referrence_to_next_letter(
             self.first_letter, self.second_letter, self.corpus.base_node)
 
-        self._assert_letter_has_referrence_to_word_in_node('e', self.WORD, self.corpus.base_node.children[self.first_letter])
+        self._assert_letter_has_referrence_to_word_in_node(
+            'e', self.WORD, self.corpus.base_node.children[self.first_letter])
 
     def test_third_letter_is_child_of_first_letter_and_has_referrence_to_word(self):
         self._assert_previous_letter_has_referrence_to_next_letter(
@@ -209,7 +210,7 @@ class TestCorpusWithManyWords(CorpusTestUtils):
         if not self._corpus:
             with open(self.FIXTURE_FILENAME, 'r') as test_fixture_file:
                 words = test_fixture_file.readlines()
-            
+
             self._corpus = make_search_corpus(words)
 
         return self._corpus
@@ -219,3 +220,8 @@ class TestCorpusWithManyWords(CorpusTestUtils):
         assert len(self.corpus.words) == self.NUMBER_OF_UNIQUE_TITLES
         assert self.corpus.base_node.words == [None]
 
+    # def test_fifa_is_in_search_corpus_in_correct_places_in_the_corpus_data_structure(self):
+    #     self._assert_node_structure_is_correct(self.corpus.base_node, 'f', 1)
+
+    #     assert 'f' in self.corpus.base_node
+    #     assert Word('fifa') in self.corpus.base_node.children['f'].words
