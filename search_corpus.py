@@ -29,7 +29,10 @@ class Node:
         self.children = {}
 
     def add_child(self, word: Word, letter: str):
-        self.children[letter] = Node(word)
+        if letter not in self.children:
+            self.children[letter] = Node(word)
+        else:
+            self.children[letter].words.append(word)
 
     def __contains__(self, letter: str):
         return letter.lower() in self.children
@@ -48,16 +51,15 @@ class SearchCorpus:
         self.base_node: Node = None
 
     def create(self):
-        word = self.words[0].lower()
-        word = Word(word)
         self.make_base_node()
         self.preprocess_words()
 
-        current_node = self.base_node
+        for word in self.words:
+            current_node = self.base_node
 
-        for letter in word.value:
-            self.add_node(current_node, word, letter)
-            current_node = current_node.children[letter]
+            for letter in word.value:
+                self.add_child_to_node(current_node, word, letter)
+                current_node = current_node.children[letter]
 
     def make_base_node(self):
         self.base_node = Node(None)
@@ -66,7 +68,7 @@ class SearchCorpus:
         unique_lower_case_letters = {word.lower().strip() for word in self.words}
         self.words = {Word(w) for w in unique_lower_case_letters}
 
-    def add_node(self, current_node: Node, word: Word, letter: str):
+    def add_child_to_node(self, current_node: Node, word: Word, letter: str):
         current_node.add_child(word, letter)
 
 

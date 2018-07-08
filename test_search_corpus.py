@@ -1,4 +1,4 @@
-from search_corpus import make_search_corpus, Word, WordList
+from search_corpus import make_search_corpus, Node, SearchCorpus, Word, WordList
 
 
 class TestWordList:
@@ -50,7 +50,7 @@ class CorpusTestUtils:
     def _assert_previous_letter_has_referrence_to_next_letter(self, prev_letter: str, next_letter: str, node: Node):
         assert next_letter in node.children[prev_letter].children
 
-    def _assert_letter_has_referrence_to_word_in_node(self, word: str, letter: str, node: Node):
+    def _assert_letter_has_referrence_to_word_in_node(self, letter: str, word: str, node: Node):
         assert Word(word) in node.children[letter].words
 
 
@@ -79,7 +79,7 @@ class TestCorpusOfOneWord(CorpusTestUtils):
         self._assert_previous_letter_has_referrence_to_next_letter(
             self.first_letter, self.second_letter, self.corpus.base_node)
 
-        self._assert_letter_has_referrence_to_word_in_node(self.WORD, 'e', self.corpus.base_node.children[self.first_letter])
+        self._assert_letter_has_referrence_to_word_in_node('e', self.WORD, self.corpus.base_node.children[self.first_letter])
 
     def test_third_letter_is_child_of_first_letter_and_has_referrence_to_word(self):
         self._assert_previous_letter_has_referrence_to_next_letter(
@@ -136,11 +136,86 @@ class TestCorpusWithOneWordWithWhiteSpaceAndUpperCaseLetter(TestCorpusOfOneWord)
         return make_search_corpus([original_word])
 
 
-class TestCorpusOfTwoWordsThatStartWithDifferentLetters:
+class TestCorpusOfTwoWordsThatStartWithDifferentLetters(CorpusTestUtils):
+    WORD1 = 'hello'
+    word1_first_letter = WORD1[0]
+    word1_second_letter = WORD1[1]
+
+    WORD2 = 'world'
+    word2_first_letter = WORD2[0]
+    word2_second_letter = WORD2[1]
+
+    size_of_base_node_in_corpus = 2
+
+    @property
+    def corpus(self):
+        return make_search_corpus([self.WORD1, self.WORD2])
 
     def test_duplicate_words_are_removed(self):
         corpus = SearchCorpus(['hi', 'hi', 'Hi', 'HI', 'hello', 'Hello', ' heY', ' hey'])
         corpus.preprocess_words()
 
         assert len(corpus.words) == 3
+
+    def test_first_letter_of_each_word_has_referrence_to_the_word(self):
+        self._assert_letter_in_node_refers_to_word(self.word1_first_letter, self.WORD1, self.corpus.base_node)
+        self._assert_letter_in_node_refers_to_word(self.word2_first_letter, self.WORD2, self.corpus.base_node)
+
+    def _assert_letter_in_node_refers_to_word(self, letter: str, word: str, node: Node):
+        assert Word(word) in node.children[letter].words
+
+    def test_two_letters_are_in_base_of_corpus(self):
+        assert len(self.corpus.base_node) == self.size_of_base_node_in_corpus
+
+    def test_first_letter_of_each_word_has_referrence_to_second_letter_of_the_word(self):
+        self._assert_previous_letter_has_referrence_to_next_letter(
+            self.word1_first_letter, self.word1_second_letter, self.corpus.base_node)
+
+        self._assert_previous_letter_has_referrence_to_next_letter(
+            self.word2_first_letter, self.word2_second_letter, self.corpus.base_node)
+
+    def test_second_letter_is_child_of_first_letter_and_has_referrence_to_word(self):
+        self._assert_previous_letter_has_referrence_to_next_letter(
+            self.word1_first_letter, self.word1_second_letter, self.corpus.base_node)
+        self._assert_letter_has_referrence_to_word_in_node(
+            self.word1_second_letter, self.WORD1, self.corpus.base_node.children[self.word1_first_letter])
+
+        self._assert_previous_letter_has_referrence_to_next_letter(
+            self.word2_first_letter, self.word2_second_letter, self.corpus.base_node)
+        self._assert_letter_has_referrence_to_word_in_node(
+            self.word2_second_letter, self.WORD2, self.corpus.base_node.children[self.word2_first_letter])
+
+
+class TestCorpusOfTwoWordsThatStartWithSameCoupleOfLetters(TestCorpusOfTwoWordsThatStartWithDifferentLetters):
+    WORD1 = 'hello'
+    word1_first_letter = WORD1[0]
+    word1_second_letter = WORD1[1]
+
+    WORD2 = 'hebo'
+    word2_first_letter = WORD2[0]
+    word2_second_letter = WORD2[1]
+
+    size_of_base_node_in_corpus = 1
+
+
+class TestCorpusWithManyWords(CorpusTestUtils):
+    FIXTURE_FILENAME = './fixture_for_testing.txt'
+    NUMBER_OF_UNIQUE_TITLES = 186
+
+    _corpus = None
+
+    @property
+    def corpus(self):
+        if not self._corpus:
+            with open(self.FIXTURE_FILENAME, 'r') as test_fixture_file:
+                words = test_fixture_file.readlines()
+            
+            self._corpus = make_search_corpus(words)
+
+        return self._corpus
+
+    def test_corpus_construction_is_successful(self):
+        assert self.corpus
+        assert len(self.corpus.words) == self.NUMBER_OF_UNIQUE_TITLES
+        assert self.corpus.base_node.words == [None]
 
