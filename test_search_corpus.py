@@ -1,7 +1,6 @@
 import string
 
 from search_corpus import make_search_corpus, Node, SearchCorpus, Word, WordList
-from test_search import search_corpus
 
 
 class TestWordList:
