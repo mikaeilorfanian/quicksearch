@@ -107,3 +107,18 @@ class TestCorpusWithOneWordWithWhiteSpaceInWord(TestCorpusOfOneWord):
     third_letter = WORD[2]
     fourth_letter = WORD[3]
     fifth_letter = WORD[4]
+
+
+class TestCorpusWithOneWordWithWhiteSpaceAndUpperCaseLetter(TestCorpusOfOneWord):
+    WORD = 'hEl l'
+    first_letter = WORD[0]
+    second_letter = WORD[1].lower()
+    third_letter = WORD[2]
+    fourth_letter = WORD[3]
+    fifth_letter = WORD[4]
+
+    @property
+    def corpus(self):
+        original_word = '%s' % self.WORD 
+        self.WORD = self.WORD.lower()
+        return make_search_corpus([original_word])
