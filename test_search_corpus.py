@@ -1,6 +1,7 @@
 import string
 
 from search_corpus import make_search_corpus, Node, SearchCorpus, Word, WordList
+from test_search import search_corpus
 
 
 class TestWordList:
@@ -202,29 +203,16 @@ class TestCorpusOfTwoWordsThatStartWithSameCoupleOfLetters(TestCorpusOfTwoWordsT
 
 
 class TestCorpusWithManyWords(CorpusTestUtils):
-    FIXTURE_FILENAME = './fixture_for_testing.txt'
     NUMBER_OF_UNIQUE_TITLES = 186
 
-    _corpus = None
+    def test_corpus_construction_is_successful(self, search_corpus):
+        assert search_corpus
+        assert len(search_corpus.words) == self.NUMBER_OF_UNIQUE_TITLES
+        assert search_corpus.base_node.words == [None]
 
-    @property
-    def corpus(self):
-        if not self._corpus:
-            with open(self.FIXTURE_FILENAME, 'r') as test_fixture_file:
-                words = test_fixture_file.readlines()
-
-            self._corpus = make_search_corpus(words)
-
-        return self._corpus
-
-    def test_corpus_construction_is_successful(self):
-        assert self.corpus
-        assert len(self.corpus.words) == self.NUMBER_OF_UNIQUE_TITLES
-        assert self.corpus.base_node.words == [None]
-
-    def test_fifa_is_in_search_corpus_in_correct_places_in_the_corpus_data_structure(self):
+    def test_fifa_is_in_search_corpus_in_correct_places_in_the_corpus_data_structure(self, search_corpus):
         number_of_children_in_base_node = 29
-        self._assert_node_structure_is_correct(self.corpus.base_node, 'f', number_of_children_in_base_node)
+        self._assert_node_structure_is_correct(search_corpus.base_node, 'f', number_of_children_in_base_node)
 
-        assert 'f' in self.corpus.base_node
-        assert Word('fifa 14 international') in self.corpus.base_node.children['f'].words
+        assert 'f' in search_corpus.base_node
+        assert Word('fifa 14 international') in search_corpus.base_node.children['f'].words
