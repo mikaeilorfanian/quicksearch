@@ -97,3 +97,17 @@ def make_search_corpus(words):
     search_corpus.create()
 
     return search_corpus
+
+
+class SearchEngineFromFile:
+    _instance = None
+
+    @classmethod
+    def create(cls, filename):
+        if not cls._instance:
+            with open(filename, 'r') as test_fixture_file:
+                words = test_fixture_file.readlines()
+
+            cls._instance = make_search_corpus(words)
+
+        return cls._instance

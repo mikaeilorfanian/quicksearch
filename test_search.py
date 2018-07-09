@@ -20,7 +20,7 @@ def search_corpus():
 def _assert_number_of_results_for_query(corpus: SearchCorpus, query: str, expected_results: List[Word]):
         query_results = corpus.get_hits_for_letters(query)
 
-        assert len(query_results) == len(expected_results)        
+        assert len(query_results) == len(expected_results)
         assert [word.value for word in query_results] == expected_results
 
 
