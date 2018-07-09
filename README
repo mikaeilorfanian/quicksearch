@@ -1,0 +1,33 @@
+# How to Run the App
+This project uses pipenv instead of pip (instructions for pip come later).
+
+## pipenv
+1. Go to project directory   
+2. Make a virtual env and install requirements    
+    `$ pipenv install --dev`     
+3. Activate virtual env    
+    `$ pipenv shell`   
+4. Run server    
+    `$ python web_interface.py <path_to_titles_file>`
+5. To search for "Google" send a GET request to
+    `http://127.0.0.1:5000/search/google`
+    The response is a JSON array. An empty array means no hits were found
+
+## pip
+Note that only steps 2 and 3 from above are different using `pip`.
+`pip install` the required Python packages using dev-requirements.txt    
+This will install packages for running tests as well.
+Then run server like step #4 above.
+
+# Running Tests
+Make sure you've activate the virtual env (`pipenv shell`), then do    
+`$ pytest`
+`$ flake8 --max-line-length=120`
+
+Note: tests do not cover the web interface part of the application.
+
+# General Notes
+- The search engine's data structures are created during the handling of the first request meaning only once each time you run the server. So, the processing of the first request takes longer than later requests.
+- I gave preferrence to testing of the search engine data structure and search functionality.
+- I've tried also to speed up searching in expense of memory and data structure creation speed.
+- The structure of modules in the project can be improved, but there's no reason for doing so right now as the number of files in the root directory is low.
